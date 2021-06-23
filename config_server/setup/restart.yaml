@@ -1,0 +1,10 @@
+---
+
+- name: Restart server
+  hosts: project-server
+  become: true
+  tasks:
+        - name: Stop project service
+          systemd: state=stopped name=project
+        - name: Start project service
+          systemd: state=started name=project
