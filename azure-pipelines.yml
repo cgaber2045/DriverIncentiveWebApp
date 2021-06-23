@@ -1,0 +1,27 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+- master
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+
+- task: InstallSSHKey@0
+  inputs:
+    knownHostsEntry: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDXhk64wBGttbX740cspQbUAJ8eqggBDcACDKk9Hhx5Wmr5WfB1oxR9hcYjCDCXru8PBFyrSSYI9BStVqgiljKEAB+FLCacyPFV9FJ9Nxv6vlCltElpxoh+wKdsBCiCKOmsZONYx71kC58PLKiLgZYkbVw6Y17NBZi08+m//kecKS6XuXGWHfJpblm234XIW6x7zzb/dIJ10ce49Jt+fO52btRAfoLrjzJCtbsb+jsRzHJlSEwlL5V1ccjcdBZ7z5OLObOX4bPk4LL27HNzyOOrhYqROSes5WD98ngU5Lr/CVcxo2SV+zJWXhUrUK/gM3GbOLgooPNJ5OCuQtBtAUMX
+    sshPublicKey: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCzSCElgncyVxx+mx4rxAJSs2oMtqauh98FTgKdXfqF6qbitmHytTEv70FQcWHuzYpFlqaLq7Qh2jftgJmE8S6nyoWE3IxQpjOnU2decFSLs1OAj7L1oC+e3tJ+snyneIqUWoScd4xys+BpQatiQnNtUHVdIu9YTW11npw9BNEpmbGdC0Z2mkAHyzSIZO7CM0SZdBaVg9fFskyH41cPaJgZmiv2dn5d3rKIEapxp9OF9V9N+IuO5tTmY6g7gmRsceicfOE6qBCquzN0F1nip6e6C71xKqpwHqFOCpGgDel3ZwYFoab3/dHDUy7VQHwk24u0r64DT7+BnHZKTMM8BxiD arch@erhasti
+    sshKeySecureFile: azure_auto
+  displayName: "Make sure SSH key works"
+- task: SSH@0
+  inputs:
+    sshEndpoint: 'Ansible Control Node'
+    runOptions: 'inline'
+    inline: |
+      ansible-playbook auto-deploy.yaml;
+    readyTimeout: '20000'
+  displayName: "Run the Ansible Playbook to deploy code"

@@ -1,0 +1,49 @@
+{% extends "sponsor/sponsorBase.html" %}
+{% block sponsorContent %}
+<h1>Edit Driver</h1>
+{% set fname = user.properties['fname'] %}
+{% set mname = user.properties['mname'] %}
+{% set lname = user.properties['lname'] %}
+{% set username = user.properties['user'] %}
+{% set email = user.properties['email'] %}
+{% set address = user.properties['address'] %}
+{% set phone = user.properties['phone'] %}
+{% set points = points %}
+<div class="driver-table">
+    <div class="row">
+        <p>Username: <strong><span id="drivername">{{ username }}</span></strong></p>
+    </div>
+    <hr>
+    <div class="row">
+        <p>E-mail: <input type="email" id="email" value="{{ email }}"></p>
+        <button class="tfbutton" id="update-email">Update</button>
+    </div>
+    <hr>
+    <div class="row">
+        <div class="left">
+            <p>First Name: <input type="text" id="first_name" value="{{ fname }}"></p>
+            <p>Middle Name: <input type="text" id="mid_name" value="{{ mname }}"></p>
+            <p>Last Name: <input type="text" id="last_name" value="{{ lname }}"></p>
+        </div>
+        <div class="right">
+            <button class="tfbutton" id="update-names">Update</button>
+        </div>
+    </div>
+    <hr>
+    <div class="row">
+        <p>Address: <input type="text" id="address" value="{{ address }}"></p>
+        <button class="tfbutton" id="update-address">Update</button>
+    </div>
+    <hr>
+    <div class="row">
+        <p>Phone: <input type="phone" id="phone" value="{{ phone }}"></p>
+        <button class="tfbutton" id="update-phone">Update</button>
+    </div>
+    <hr>
+    <div class="row">
+        <p>Points: <input type="text" id="points" readonly value="{{ points }}">
+        <input type="text" id="addPoints"><button id="ptsButton">+</button>
+        </p>
+    </div>
+</div>
+{% endblock %}

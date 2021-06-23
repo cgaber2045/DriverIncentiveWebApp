@@ -1,0 +1,37 @@
+
+{% extends "driver/driverBase.html" %}
+<!--<head> <script src="https://www.google.com/recaptcha/api.js"></script> </head>-->
+{% block driverContent %}
+	<h1>Are you sure you want to quick buy {{results['name']}}? </h1>
+
+
+	<div>
+	{%if results['img_url'] != None%}
+	<img src="{{results['img_url']}}"> 
+	{%endif%}
+	</div>
+	<p> {{results['description']}}</p>
+	<p> ${{results['price']}}</p>
+	<form action="/buynowrecipt" method="POST">
+		<div>
+			<button id='{{results['name']}}' type="submit"  name='buy' value="{{results['name']}}">Yes, Buy Now!</button>
+		</div>
+	<div>
+	</form>
+	
+
+<!--<button class="g-recaptcha" 
+        data-sitekey="6LfSEOEZAAAAAPFSA6ZfYrGBUuRo8BqcYJ-JuYML" 
+        data-callback='onSubmit' 
+	data-action='submit'>Submit</button>-->
+{% endblock %}
+{%block footer%}
+<!--
+ <script>
+   function onSubmit(token) {
+     document.getElementById("demo-form").submit();
+   }
+ </script>
+ -->
+
+{%endblock%}

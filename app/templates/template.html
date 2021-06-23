@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block content %}
+	<!--Header Start-->
+	<header>
+        <div id="top-navbar">
+
+            <a href="#home" style="font-size: 50px;">
+                <span>Reward App Logo</span>
+                <!--<img src="{{url_for('static', filename='img/tempLogo.png')}}" style="width:50px; text-align:left; position:absolute;float:left;">-->
+            </a>
+
+            <div id="top-navbar-right">
+                <a>
+                    <img src="{{url_for('static', filename='img/userpic.png')}}" style="width:50px;padding-top:10px;">
+                </a>
+
+                <a style="padding-left:0;">
+                    <span>{{ user.capitalize() }}</span>
+                </a>
+
+                <a href="/logout">
+                    <img src="{{url_for('static', filename='img/logout.png')}}" style="width:50px;padding-top:10px;">
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <article>
+        <div class="container">
+                <!--Side Nav Bar Start-->
+
+                <div class="one-fifth">
+                    <ul class="side-navbar">
+                        <li><a href="">Template</a></li>
+                        <li>
+                            <a href="">
+                                <img src="{{url_for('static', filename='img/settings.png')}}" style="width:30px;vertical-align:middle;padding-right: 5px;">
+                                <span style="line-height:30px;">Settings</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <!--Content Start-->
+                <div class="row">
+                    <div class="one-sixth"></div>
+                    <div class="five-sixths">
+                        <h1>Page Content Starts</h1>
+                        <h2>Example Content</h2>
+                        <h3>Deep</h3>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque eleifend neque eros, a suscipit erat tristique ac. Pellentesque at fringilla justo. Duis ac lacus non augue consectetur imperdiet. Integer scelerisque tincidunt ex, et gravida massa maximus sit amet. Sed cursus odio euismod urna aliquam, in pharetra elit interdum. Nullam lacinia libero ut gravida pulvinar. Fusce fermentum ante sed metus varius molestie. Nam et elit purus. Donec sed dolor aliquet, porta libero at, finibus diam. Vestibulum vel ipsum pulvinar, sagittis neque at, lobortis enim. Nam pellentesque molestie diam, nec luctus turpis pretium eget. Donec venenatis aliquam purus, vel imperdiet sapien tincidunt congue. Vivamus posuere malesuada nulla a fermentum.</p>
+                        <h2>Example Content</h2>
+                        <h3>Deep</h3>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque eleifend neque eros, a suscipit erat tristique ac. Pellentesque at fringilla justo. Duis ac lacus non augue consectetur imperdiet. Integer scelerisque tincidunt ex, et gravida massa maximus sit amet. Sed cursus odio euismod urna aliquam, in pharetra elit interdum. Nullam lacinia libero ut gravida pulvinar. Fusce fermentum ante sed metus varius molestie. Nam et elit purus. Donec sed dolor aliquet, porta libero at, finibus diam. Vestibulum vel ipsum pulvinar, sagittis neque at, lobortis enim. Nam pellentesque molestie diam, nec luctus turpis pretium eget. Donec venenatis aliquam purus, vel imperdiet sapien tincidunt congue. Vivamus posuere malesuada nulla a fermentum.</p>
+                        <h2>Example Content</h2>
+                        <h3>Deep</h3>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque eleifend neque eros, a suscipit erat tristique ac. Pellentesque at fringilla justo. Duis ac lacus non augue consectetur imperdiet. Integer scelerisque tincidunt ex, et gravida massa maximus sit amet. Sed cursus odio euismod urna aliquam, in pharetra elit interdum. Nullam lacinia libero ut gravida pulvinar. Fusce fermentum ante sed metus varius molestie. Nam et elit purus. Donec sed dolor aliquet, porta libero at, finibus diam. Vestibulum vel ipsum pulvinar, sagittis neque at, lobortis enim. Nam pellentesque molestie diam, nec luctus turpis pretium eget. Donec venenatis aliquam purus, vel imperdiet sapien tincidunt congue. Vivamus posuere malesuada nulla a fermentum.</p>
+                        <h2>Example Content</h2>
+                        <h3>Deep</h3>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque eleifend neque eros, a suscipit erat tristique ac. Pellentesque at fringilla justo. Duis ac lacus non augue consectetur imperdiet. Integer scelerisque tincidunt ex, et gravida massa maximus sit amet. Sed cursus odio euismod urna aliquam, in pharetra elit interdum. Nullam lacinia libero ut gravida pulvinar. Fusce fermentum ante sed metus varius molestie. Nam et elit purus. Donec sed dolor aliquet, porta libero at, finibus diam. Vestibulum vel ipsum pulvinar, sagittis neque at, lobortis enim. Nam pellentesque molestie diam, nec luctus turpis pretium eget. Donec venenatis aliquam purus, vel imperdiet sapien tincidunt congue. Vivamus posuere malesuada nulla a fermentum.</p>
+                    </div>
+                </div>
+        </div>
+    </article>
+{% endblock %}

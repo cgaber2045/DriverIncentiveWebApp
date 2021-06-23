@@ -1,0 +1,56 @@
+{% extends "landing/landingTemplate.html" %}
+{% block landingContent %}
+<div class="row">
+    <h1>Sign Up</h1>
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <ul>
+            {% for message in messages %}
+                <li>{{ message }}</li>
+            {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+
+</div>
+
+<p style="margin:0"> Fill out the form below.</p>
+
+<form action="{{ url_for('signup') }}" method="POST">
+    <p style="margin:0">Enter Sponsor Code (optional): <input type="text" placeholder="Sponsor Code" id="textbox" class="tftextinput" name="sponsorid" size="10" maxlength="100"></p>
+
+    <div class="row">
+        <input type="text" placeholder="First Name" id="textbox" class="tftextinput" name="fname" size="10" maxlength="100" required>
+        <input type="text" placeholder="Middle Name" id="textbox" class="tftextinput" name="mname" size="10" maxlength="100">
+        <input type="text" placeholder="Last Name" id="textbox" class="tftextinput" name="lname" size="10" maxlength="100" required>
+    </div>
+
+    <div class="row">
+        <input type="text" placeholder="Address" id="textbox" class="tftextinput" name="address" size="10" maxlength="100" required>
+        <input type="text" placeholder="Phone Number" id="textbox" 
+               class="tftextinput" name="phone" size="10" maxlength="10" 
+               pattern="[0-9]{10}" required>
+        <input type="email" placeholder="E-mail" id="textbox" class="tftextinput" name="email" size="10" maxlength="100" required>
+    </div>
+
+   <div class="row">
+       <input type="text" placeholder="Username" id="textbox" class="tftextinput" name="user" size="10" maxlength="100" required>
+   </div>
+   
+   <div class="row">
+       <input type="password" placeholder="Password" id="password" class="tftextinput" name="pass" size="10" maxlength="20" onkeyup="checkPassComplexity()" required>
+       <span id="password-message"></span>
+   </div>
+   
+   <div class="row">
+       <input type="password" placeholder="Confirm Password" id="confirm" class="tftextinput" name="pass_repeat" size="10" maxlength="20" onkeyup="checkPass()" required>
+       <span id="confirm-message" class="confirm-message"></span>
+   </div>
+
+   <div class="row">
+       <button id="signupbutton" type="submit" class="tfbutton" disabled=true>Sign Up</button>
+   </div>
+</form>
+</div>
+<script type="text/javascript" src="{{url_for('static', filename='js/signup.js')}}"></script>
+{% endblock %}

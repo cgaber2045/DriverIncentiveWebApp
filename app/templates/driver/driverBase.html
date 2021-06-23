@@ -1,0 +1,140 @@
+{% extends "base.html" %}
+
+{% block content %}
+	<!--Header Start-->
+	<header>
+        <div id="top-navbar">
+
+            <a href="#home" style="font-size: 50px;">
+                <!--<img src="{{url_for('static', filename='img/logo.png')}}" class="logo">-->
+                <span>Reward App Logo</span>
+            </a>
+
+            <div id="top-navbar-right">
+                {% if session['userInfo']['properties']['selectedSponsor'][0] %}
+                <a style="padding-left:0;">
+                    <span>Current Sponsor: {{ getSponsorTitle(session['userInfo']['properties']['selectedSponsor'][0]) }}</span>
+                </a>
+                {% endif %}
+                <div class="dropdown">
+                    <i class="fa fa-chevron-circle-down" aria-hidden="true" style="font-size: 2em;"></i>
+                    <div class="dropdown-content">
+                        
+                        <form id = "sponsorform" action="{{ url_for('switchSponsor') }}" method="post">
+                        </form>
+
+                        <select class="dropdown-content" id="sponsorSelect" name="sponsorSelect" form="sponsorform" size="{{session['userInfo']['properties']['sponsors']|length}}">
+                            {% if not session['userInfo']['properties']['role'] == "admin" or session['userInfo']['properties']['role'] == "sponsor" %}
+                            <option hidden disabled selected value> Select</option>
+                            {% for sponsor in session['userInfo']['properties']['sponsors'] %}
+                                {% if sponsor[0] != session['userInfo']['properties']['selectedSponsor'][0] %}
+                                <option value="{{ sponsor [0] }}">{{ getSponsorTitle(sponsor[0]) }}</option>
+                                {% else %}
+                                <option value="{{ sponsor [0] }}" selected>{{ getSponsorTitle(sponsor[0]) }}</option>
+                                {% endif %}
+                            {% endfor %}         
+                            {% endif %}                                     
+                        </select>
+                    </div>
+                </div>
+                
+                {% if session['userInfo']['properties']['role'] == "admin" or session['userInfo']['properties']['role'] == "sponsor" %}
+                <div class="dropdown">
+                    <img class="dropbtn" src="{{url_for('static', filename='img/viewChange.png')}}" style="width:50px;padding-top:10px;" title="Change View">
+                    <div class="dropdown-content">
+                        <a href="/returnView">Return View</a>
+                    </div>
+                </div>
+                {% endif %}
+
+                    {% if session['shoppingCart'] | length > 0 %}
+                    <span class="fa-stack fa-3x" data-count=" {{ session['shoppingCart'] | length }} ">
+                        <a href="/driverCart" style="height: 90px;">
+                            <img src="{{url_for('static', filename='img/cart.png')}}" style="width:50px;vertical-align:baseline;">
+                        </a>
+                    </span>
+                    {% else %}
+                        <a href="/driverCart">
+                            <img src="{{url_for('static', filename='img/cart.png')}}" style="width:50px;padding-top:10px;">
+                        </a>
+                    {% endif %}
+
+                <a style="padding-left:0;">
+                    {% if session['userInfo']['properties']['selectedSponsor'][1] is not none %}
+                    <span>Points: {{ session['userInfo']['properties']['selectedSponsor'][1] }}</span>
+                    {% else %}
+                    <span>No Sponsor</span>
+                    {% endif %}
+                </a>
+                
+                {% if session['userInfo']['properties']['image'] %}
+                    <a href="/driverProfile">
+                        <img src="{{url_for('static', filename='img/userpic.png')}}" class="pfp">
+                    </a>
+                {% else %}
+                    <a href="/driverProfile">
+                        <img src="{{url_for('static', filename='img/userpic.png')}}" class="pfp">
+                    </a>
+                {% endif %}
+
+                <a style="padding-left:0;">
+                    <span>{{ session['userInfo']['properties']['user'].capitalize() }}</span>
+                </a>
+
+                <a href="/logout">
+                    <img src="{{url_for('static', filename='img/logout.png')}}" style="width:50px;padding-top:10px;">
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <article>
+        <div class="container">
+                <!--Side Nav Bar Start-->
+                {% macro nav_link(endpoint, name) %}
+                {% if request.endpoint.endswith(endpoint) %}
+                    <li class="active"><a href="{{ url_for(endpoint) }}">{{name}}</a></li>
+                {% else %}
+                    <li><a href="{{ url_for(endpoint) }}">{{name}}</a></li>
+                {% endif %}
+                {% endmacro %}
+
+                <div class="one-fifth">
+                    <ul class="side-navbar">
+                        {{ nav_link('home', 'Home') }}
+                        {{ nav_link('driverPointsLeader', 'Points Leaderboard') }}
+                        {{ nav_link('driverManagePurchase', 'Manage Purchases') }}
+                        {{ nav_link('driverProfile', 'Profile') }}
+                        {{ nav_link('inbox', 'Inbox') }}
+                        
+                        <li>
+                            <a href="/settings">
+                                <img src="{{url_for('static', filename='img/settings.png')}}" style="width:30px;vertical-align:middle;padding-right: 5px;">
+                                <span style="line-height:30px;">Settings</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <!--Content Start-->
+                <div class="row">
+                    <div class="one-sixth"></div>
+                    <div class="five-sixths">
+                        {% with messages = get_flashed_messages() %}
+                        {% if messages %}
+                        <ul class="flashes" style="text-color: red; border: 1px solid red;">
+                        {% for message in messages %}
+                            <li style="text-align: center; list-style: none;">{{ message }}</li>
+                        {% endfor %}
+                        </ul>
+                        {% endif %}
+                        {% endwith %}
+                        {% block driverContent %}
+
+                        {% endblock %}
+                    </div>
+                </div>
+        </div>
+    </article>
+
+{% endblock %}

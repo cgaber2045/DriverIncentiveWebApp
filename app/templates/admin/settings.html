@@ -1,0 +1,71 @@
+{% extends "admin/adminBase.html" %}
+{% block adminContent %}
+<h1>Settings</h1>
+
+<h3>Change Account Info</h3>
+<form action="{{ url_for('settings') }}" method="POST">
+    <div class="row">
+        <input type="text" placeholder="First Name" id="textbox" class="tftextinput" name="first_name" size="10" maxlength="100">
+        <input type="text" placeholder="Middle Name" id="textbox" class="tftextinput" name="mid_name" size="10" maxlength="100">
+        <input type="text" placeholder="Last Name" id="textbox" class="tftextinput" name="last_name" size="10" maxlength="100">
+    </div>
+
+    <div class="row">
+        <input type="text" placeholder="Address" id="textbox" class="tftextinput" name="address" size="10" maxlength="100">
+        <input type="text" placeholder="Phone Number" id="textbox" 
+               class="tftextinput" name="phone" size="10" maxlength="10" 
+               pattern="[0-9]{10}" >
+        <input type="email" placeholder="E-mail" id="textbox" class="tftextinput" name="email" size="10" maxlength="100">
+    </div>
+
+    <div class="row">
+        <button type="submit" class="tfbutton" name="change-info">Update</button>
+    </div>
+</form>
+
+<h3>Update Password</h3>
+<form action="/settings" name="passForm", id="passForm" method="POST">
+    <div class="row">
+        <input type="password" placeholder="Old Password" id="oldpassword" class="tftextinput" name="old_pass" size="10" maxlength="20" required>
+    </div>
+    <div class="row">
+        <input type="password" placeholder="New Password" id="password" class="tftextinput" name="pass" size="10" maxlength="20" onkeyup="checkPassComplexity()" required>
+       <span id="password-message"></span>
+   </div>
+   
+   <div class="row">
+       <input type="password" placeholder="Confirm Password" id="confirm" class="tftextinput" name="pass_repeat" size="10" maxlength="20" onkeyup="checkPass()" required>
+       <span id="confirm-message" class="confirm-message"></span>
+   </div>
+
+   <div class="row">
+       <button name="pwd-submit" id="signupbutton" type="submit" class="tfbutton" disabled=true style="width:100px;height:50px;">Change Password</button>
+   </div>
+</form>
+
+<h3>Delete Account</h3>
+<form action="{{ url_for('settings') }}" method="POST">
+    <button type="submit" name="delete-account">Delete Account</button>
+</form>
+
+<h3>Change Theme</h3>
+<label for="themeColor">Select Theme Color</label>
+        <select name="themeSelect" id = "themeSelect">
+            <option hidden disabled selected value> Select </option>
+            <option value = "main">Main Theme</option>
+            <option value = "clemson">Clemson Theme</option>
+            <option value = "dark">Dark Theme</option>
+            <option value = "red">Red Theme</option>
+            <option value = "seizure">Seizure Theme</option>
+        </select>
+
+<h3>Change Language</h3>
+<div id="google_translate_element"></div>
+<script type="text/javascript">
+    function googleTranslateElementInit() {
+        new google.translate.TranslateElement({pageLanguage: 'en', layout: google.translate.TranslateElement.InlineLayout.HORIZONTAL}, 'google_translate_element');
+    }
+</script>
+
+<br><br>
+{% endblock %}

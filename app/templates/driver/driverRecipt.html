@@ -1,0 +1,66 @@
+
+{% extends "driver/driverBase.html" %}
+<!--<head> <script src="https://www.google.com/recaptcha/api.js"></script> </head>-->
+{% block driverContent %}
+	<h1>Are you sure you want to buy these items? </h1>
+ {% if session['shoppingCart'] | length > 0 %}
+        <div class='cart'>
+        <form id='cart_form'>
+        <table>
+        <tr class='column-headings'>
+        <th>Delete</th>
+        <th></th>
+        <th>Item</th>
+        <th>Quantity</th>
+        <th>Unit Price</th>
+        <th>Ext. Price</th>
+        </tr>
+
+        {% set total = [0] %}
+
+        {% for item in session['shoppingCart'] %}
+            {% set itemdata = getProductInfo(item) %}
+            <tr class='item'>
+            <td class='delete'><button id="removeFromCart" name="{{item}}">X</button></td>
+            {% if itemdata[2] %}
+            <td class="item_img"><img src="{{ itemdata[2] }}"> </td>
+            {% else %}
+            <td class="item_img"> NOIMG </td>
+            {% endif %}
+            <td class='item_name'> {{ itemdata[0] }} </td>
+            <td class='item_quantity'>{{ session['shoppingCart'].get(item) }} </td>
+            <td class='item_price'> {{ itemdata[1] }} </td>
+            <td class='item_total'> {{ itemdata[1] * session['shoppingCart'].get(item) }} </td>
+            </tr>
+            {% if total.append(total.pop() + ( itemdata[1] * session['shoppingCart'].get(item) )) %}{% endif %}
+        {% endfor %}
+        <tr class='total'>
+        <th class='total'colspan='4'>Total:</th>
+        <td class='total'> {{ total }} </th>
+        </tr>
+        </table>
+	
+	<div class='buttons'>
+        <input type='submit' value='Checkout' />
+        </form>
+        </div>
+
+    {% else %}
+        <p class='no_items'>Your cart is empty.</p>
+    {% endif %}
+
+<!--<button class="g-recaptcha" 
+        data-sitekey="6LfSEOEZAAAAAPFSA6ZfYrGBUuRo8BqcYJ-JuYML" 
+        data-callback='onSubmit' 
+	data-action='submit'>Submit</button>-->
+{% endblock %}
+{%block footer%}
+<!--
+ <script>
+   function onSubmit(token) {
+     document.getElementById("demo-form").submit();
+   }
+ </script>
+ -->
+
+{%endblock%}

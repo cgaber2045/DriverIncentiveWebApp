@@ -1,0 +1,91 @@
+{% extends "admin/adminBase.html" %}
+{% block header %}
+<style>
+    .sponsor-chart {
+        height: 500px;
+        width: 700px;
+    }
+</style>
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+{% endblock %}
+
+
+{% block adminContent %}
+<div class = "header-banner">{{ head }} </div>
+<h1 style='padding-top: 20px;'>Application Statistics</h1>
+<div id="charts">
+</div>
+{% endblock %}
+{% block footer %}
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+<script type="text/javascript">
+google.charts.load('visualization', { packages: ['corechart'] });
+google.charts.setOnLoadCallback(drawLineChart);
+function drawLineChart() {
+    var loc = "{{ url_for('sponList') }}";
+    var months = Array.from(Array(13).keys()).slice(1)
+    $.ajax({
+        contentType: 'application/json; charset=utf-8',
+        dataType: 'json',
+        url: loc,
+        type: 'POST',
+        data: '',
+        success: function(response) {
+            // Create row and half wrapper variables
+            var row = null;
+
+            // Loop through each sponsor in response
+            $.each(response, (index, value) => {
+                // Start a new row if at an even numbered element
+                if ((index % 2) == 0) {
+                    row = document.createElement('div');
+                    row.className = 'row';
+                    document.getElementById('charts').appendChild(row);
+                }
+
+                // Create node and wrapper for half. Then, add them to the DOM at #charts
+                var node = document.createElement('div');
+                var wrap = document.createElement('div');
+                wrap.className = 'one-half';
+                var header = document.createElement('h2');
+                header.innerText = value['info'][0];
+                node.className = 'sponsor-chart';
+                wrap.appendChild(header);
+                wrap.appendChild(node);
+                row.appendChild(wrap);
+                
+                // Create graph data
+                var trace = {
+                    x: months,
+                    y: Object.keys(value['results']).map((key, index) => value['results'][key]),
+                    type: 'scatter',
+                    line: { shape: 'spline' }
+                };
+                var layout = {
+                    title: value['info'][0].charAt(0).toUpperCase() + value['info'][0].slice(1) + "'s Sales",
+                    xaxis: {
+                        linecolor: 'black',
+                        linewidth: 2,
+                        title: 'Month',
+                        mirror: true
+                    },
+                    yaxis: {
+                        linecolor: 'black',
+                        linewidth: 2,
+                        title: 'Sales ($)',
+                        mirror: true
+                    }
+                };
+                var fig = {
+                    data: [trace],
+                    layout: layout
+                };
+
+                Plotly.newPlot(node, fig);
+            });
+        }
+    });
+}
+    
+</script>
+{% endblock %}

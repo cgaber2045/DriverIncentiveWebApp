@@ -1,0 +1,202 @@
+
+{% extends "driver/driverBase.html" %}
+{% block driverContent %}
+{% set limits = [1, 5, 10, 50] %}
+{% block header %}
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+<style>
+    .card {
+        border: 1px solid rgba(0,0,0,.125);
+        border-radius: .25rem;
+        padding: 10px;
+        width: 100%;
+        justify-content: center;
+        box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+        transition: 0.3s;
+    }
+
+    .card:hover {
+        box-shadow: 0 12px 24px 0 rgba(0,0,0,0.2);
+    }
+
+    .card-body h5 {
+        text-transform: capitalize;
+    }
+
+    .btn-primary {
+        background-color: var(--main-theme2);
+        border-color: var(--main-theme-1);
+    }
+
+    .back-btn {
+        position: fixed;
+        z-index: 999;
+        transform: translateX(-200%);
+    }
+
+    #searchbar {
+        position: fixed;
+        z-index: 999;
+        background-color: rgba(255,255,255,1);
+    }
+</style>
+{% endblock %}
+
+<div class = "header-banner" style='margin-bottom:20px;'> {{head}} </div>
+
+<h1 style='padding-top: 20px;'>Product Catalog</h1>
+
+{% if session['userInfo']['properties']['selectedSponsor'][0] %}
+    <div class="row">
+        <p style="margin:0">Enter your search below. You can search from among {{numprod}} products.</p>
+    </div>
+    <form action="/productsearch" method="POST">
+        <div class="row">
+        <!-- Button for filtering items -->
+        <a id="showcompose" style="font-size:25px;vertical-align: middle;"><span class="fa fa-filter" aria-hidden="true" style="font-size:25px;vertical-align: middle;"></span></a>
+    
+        <div id="hide" style="display: none;border:1px solid black;width:30%;">
+            <div class="row" style="vertical-align: middle;">
+                <p>Number of Products: </p>
+                <select style="height: 30%;" id = "amount" name="amount">
+                <option value= "10" selected>10</option>
+                    {% for limit in limits %}
+                        {% if limit != 10 %}
+                        <option value= "{{limit}}"> {{limit}} </option>
+                        {% endif %}
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <div class="row" style="vertical-align: middle;">
+                <p>Genre:</p>
+                <select style="height: 30%;" id = "mylist" name="mylist">
+                    <option value= "None" selected> None </option>
+                    {%for genre in genres%}
+                        {% if genre != None %}
+                        <option value= "{{genre}}">{{genre.capitalize()}}</option>
+                        {% endif %}
+                    {%endfor%}
+                </select>
+            </div>
+    
+            <div class="row" style="vertical-align: middle;">
+                <p>Order:</p> 
+                <select style="height: 30%;" id = "orderby" name="orderby">
+                <option value= "pricedown">Ascending on Price</option>
+                <option value= "priceup">Descending on Price</option>
+                <option value= "ratingdown">Ascending on Rating</option>
+                <option value= "ratingup">Descending on Rating</option>
+                </select>
+            </div>
+            </div>
+    
+            <input type="text" placeholder="Search for products" id="search" name="search" class="tftextinput" required>
+            <button id="signupbutton" type="submit" class="tfbutton">Search</button>
+        </div>
+    </form>
+
+    {% set trunc = 200 %}
+    {% if resultrec != ' ' and resultrec|length > 0 %}
+        <h2> Recommended </h2>
+        <p>This item was a recommended just for you!</p>
+
+                <div class="row">
+                    {% for segment in resultrec %}
+                        <div class="one-third">
+                                <div class="card">
+                    {% if segment['img_url'] != None%}
+                                    <img class="card-img-top" src="{{ segment['img_url'] }}">
+                    {%endif%}
+                                    <div class="card-body">
+                                        <h5><strong>{{ segment['name'] }}</strong></h5>
+                                        <h4>{{ segment['price'] }} Points</h4>
+                                        {% if segment['description'] | length > trunc %}
+                                        <p class="card-text">{{ segment['description'][0:trunc] + '...' }}</p>
+                                        {% else %}
+                                        <p class="card-text">{{ segment['description'] }}</p>
+                                        {% endif %}
+                                        <div class="row">
+                                            <form action="/productpage" method="POST">
+                                                <button id="{{segment['name']}}" type="submit" class="add btn btn-primary" name="productname" value = "{{segment['name']}}">View</button>
+                                            </form>
+                                            <form>
+                                                <button id="addToCart" class="add btn btn-success" name="{{segment['id']}}">Add To Cart</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                        </div>
+                        {% if loop.index % 3 == 0 %}
+                        <div class="row">
+                        {% endif %}
+                    {% endfor %}
+                </div>
+    {% endif %}
+
+    {% if popular != ' '%}
+        <h2>Featured</h2>
+        <p>These are the most popular items in your catalog!</p>
+                <div class="row">
+                    {% for segment in popular %}
+                        {%if segment != ' '%}
+                        
+                        <div class="one-third">
+                            <div class="card">
+                            {% if segment['img_url'] != None%}
+                                <img class="card-img-top" src="{{ segment['img_url'] }}">
+                            {%endif%}
+                                <div class="card-body">
+                                    <h5><strong>{{ segment['name'] }}</strong></h5>
+                                    <h4>{{ segment['price'] }} Points</h4>
+                                    {% if segment['description'] | length > trunc %}
+                                    <p class="card-text">{{ segment['description'][0:trunc] + '...' }}</p>
+                                    {% else %}
+                                    <p class="card-text">{{ segment['description'] }}</p>
+                                    {% endif %}
+                                    <div class="row">
+                                        <form action="/productpage" method="POST">
+                                            <button id="{{segment['name']}}" type="submit" class="add btn btn-primary" name="productname" value = "{{segment['name']}}">View</button>
+                                        </form>
+                                        <form>
+                                            <button id="addToCart" class="add btn btn-success" name="{{segment['id']}}">Add To Cart</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% if loop.index % 3 == 0 %}
+                        <div class="row">
+                        {% endif %}
+
+                        {%endif%}
+                    {% endfor %}
+                </div>
+    {% endif %}
+{% else %}
+<p>Please sign up with a sponsor!</p>
+{% endif %}
+
+{% endblock %}
+{% block footer %}
+    <script type="text/javascript">
+        $(function () {
+            $(document).on('keyup', '#search', function(e) {
+                var search = document.getElementById('search').value;
+                if (search.length == 0)
+                    return;
+                $.ajax({
+                    contentType: "application/json; charset=utf-8",
+                    dataType: 'json',
+                    url: '/productAJAX',
+                    type: 'POST',
+                    data: JSON.stringify({'search': search}),
+                    success: function(args) {
+                        $('#search').autocomplete({
+                            source: args
+                        })}
+                    })
+                });
+            });
+    </script>
+{% endblock %}

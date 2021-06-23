@@ -1,0 +1,163 @@
+.fa-stack[data-count]:after{
+    position:absolute;
+    right:15%;
+    top:23%;
+    content: attr(data-count);
+    font-size:20%;
+    padding:.6em;
+    border-radius:999px;
+    line-height:.75em;
+    color: white;
+    background:rgba(255,0,0,.85);
+    text-align:center;
+    min-width:2em;
+    font-weight:bold;
+}
+
+div#cart {
+	margin: 20px;
+	padding: 10px;
+}
+
+#cart form {
+    margin-bottom: 20px;
+    overflow: auto;
+}
+
+#cart table {
+    background-color: #FFFFFF;
+    border-spacing: 0;
+    margin-bottom: 10px;
+    width: 100%;
+}
+
+#cart th, #cart td {
+  border-bottom: 1px solid #CCCCCC;
+  padding: 5px;
+  text-align: center;
+  margin: 10px;
+}
+
+#cart tr.column-headings {
+  background-color: #666666;
+  color: #FFFFFF;
+}
+
+#cart th.shipping {
+    text-align: right;
+}
+
+#cart th.subtotal {
+    text-align: right;
+}
+
+#cart th.tax {
+    text-align: right;
+}
+
+#cart th.total {
+    text-align: right;
+}
+
+#cart span.item_id {
+    font-size: 80%;
+    font-style: italic;
+}
+
+#cart span.item_id:nth-child(odd) {
+    color: blue;
+}
+
+#cart tr.item:nth-child(odd) {
+	background-color: #C8C8C8;
+	color: blue;
+}
+
+#cart td.item_name {
+    text-align: left;
+}
+
+#cart td.subtotal {
+    font-weight: bold;
+	color: grey;
+}
+
+#cart td.total {
+    font-weight: bold;
+	color: green;
+}
+
+#cart div.buttons {
+    text-align: right;
+}
+
+#cart input[type=button], #cart input[type=submit] {
+  border: 1px solid #666666;
+  font-weight: bold;
+  margin: 5px;
+  padding: 5px;
+  text-align: center;
+  width: 80px;
+}
+
+#cart input[type=text] {
+    text-align: center;
+}
+
+#cart input[type=button] {
+    background-color: #DDDDDD;
+}
+
+#cart input[type=button]:hover {
+    background-color: #AAAAAA;
+}
+
+#cart input[type=submit] {
+    background-color: #DDDDDD;
+}
+
+#cart input[type=submit]:hover {
+    background-color: #AAAAAA;
+}
+
+#cart input.delete {
+    background-color: white;
+	color: red;
+	width: 25px;
+}
+
+#cart input.delete:hover {
+    background-color: #000000;
+	cursor: pointer;
+}
+
+/******** widget styles ********/
+
+div#cart_links {
+    float: right;
+    font-family: sans-serif;
+}
+
+img.cart_icon {
+    border: none;
+    float: left;
+    height: 42px;
+    margin-right: 5px;
+}
+
+.cart_link {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.item_count {
+    color: #777777;
+    font-size: 14px;
+    float: left;
+}
+
+.checkout_link {
+    float: right;
+    font-size: 14px;
+    font-weight: bold;
+}

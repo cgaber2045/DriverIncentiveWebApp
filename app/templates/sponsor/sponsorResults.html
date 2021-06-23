@@ -1,0 +1,137 @@
+{% extends "sponsor/sponsorBase.html" %}
+{% block header %}
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+<style>
+    .card {
+        border: 1px solid rgba(0,0,0,.125);
+        border-radius: .25rem;
+        padding: 10px;
+        width: 100%;
+        justify-content: center;
+        box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+        transition: 0.3s;
+    }
+
+    .card:hover {
+        box-shadow: 0 12px 24px 0 rgba(0,0,0,0.2);
+    }
+
+    .card-body h5 {
+        text-transform: capitalize;
+    }
+
+    .btn-primary {
+        background-color: var(--main-theme2);
+        border-color: var(--main-theme-1);
+    }
+
+    #side-hover {
+        position: fixed;
+        z-index: 999;
+        transform: translateX(-150%);
+    }
+
+    #searchbar {
+        position: fixed;
+        z-index: 999;
+        background-color: rgba(255,255,255,1);
+    }
+</style>
+{% endblock %}
+{% block sponsorContent %}
+    {% set trunc = 40 %}
+    {% set limits = [25, 50, 100] %}
+    {% if results %}
+        <form id="searchbar" action="{{ url_for('sponsorSearch') }}" method="POST">
+        <input type="text" class="tftextinput" name="search" id="search" placeholder="Name, genre, type..."required>
+        <label for="limit"># of products shown:</label>
+        <select name="limit" id="limit">
+        {% for limit in limits %}
+            <option value="{{ limit }}">{{ limit }}</option>
+        {% endfor %}
+        </select>
+        <button type="submit" class="tfbutton" id="searchButton">Search</button>
+        </form>
+        <hr>
+        <div id="results">
+            <div id="side-hover">
+                <input class="tfbutton back-btn" type="button" value="Go Back" onclick="history.back(-1)">
+                <br>
+                <label for="sort">Sort on:</label>
+                <select name="sort" id="sort">
+                    <option class="opt" selected="selected">Choose</option>
+                    <option class="opt">Price</option>
+                    <option class="opt">Name</option>
+                </select>
+
+            </div>
+        {% for result in results %}
+        {% if loop.index0 % 3 == 0 %}
+        <div class="row">
+        {% endif %}
+            <div class="one-third">
+                <div class="card" name="{{ result['title'] }}" data-price="{{ result['price'] }}">
+                    <img class="card-img-top" src="{{ result['Images'] }}">
+                    <div class="card-body">
+                        <h5><strong>{{ result['title'][0:trunc] }}</strong></h5>
+                        <h4>${{ result['price'] }}</h4>
+                        {% if result['description'] | length > trunc %}
+                        <p class="card-text">{{ result['description'][0:trunc] + '...' }}</p>
+                        {% else %}
+                        <p class="card-text">{{ result['description'] }}</p>
+                        {% endif %}
+                        <a target="_blank" href="{{ result['url'] }}"><button type="button" class="tfbutton">View</button></a>
+                        <button id="{{ result['listing_id'] }}" type="button" class="add btn btn-primary" name="add">Add</button>
+                    </div>
+                </div>
+            </div> 
+        {% if loop.index0 % 3 == 2 or loop.index0 == (results | length) - 1 %}
+        </div>
+        {% endif %}
+        {% endfor %}
+        </div>
+    {% endif %}
+{% endblock %}
+
+{% block footer %}
+<script type="text/javascript">
+   var token = "";
+   $.get("/sponsor/api/auth/" + "{{ session['userInfo']['properties']['user'] }}",
+            function (result) {
+                token = result['token'];
+                console.log(token);
+            }
+        );
+   $(function () {
+        $(document).on('click', ".add", function(e) {
+            var id = $(this).attr('id');
+            var title = $(this).siblings('h5')[0].innerText;
+            var price = $(this).siblings('h4')[0].innerText.replace('$','');
+            var desc = $(this).siblings('.card-text')[0].innerText;
+            var url = $(this).siblings('a')[0].href;
+            var img_url = $(this).parent().siblings('.card-img-top')[0].src;
+            var arr = {'title': title, 'price': price, 'description': desc,
+                        'url': url, 'img_url': img_url, 'listing_id': id};
+            console.log(arr);
+
+            $(this).addClass('fa fa-spinner');
+            $(this).prop('disabled', true);
+            $.ajax({
+                contentType: 'application/json;charset=utf-8',
+                url: '/sponsor/api/catalog',
+                type: 'POST',
+                data: JSON.stringify(arr),
+                headers: {'X-API-KEY': token},
+                success: function(response) {
+                    $('#' + id).addClass('fa fa-check').removeClass('fa-spinner');
+                    console.log(response);
+                },
+                error: function(response) {
+                    $('#' + id).addClass('fa fa-times-circle-o').removeClass('fa-spinner');
+                    console.log(response);
+                }
+            });
+        });
+   });
+</script>
+{% endblock %}

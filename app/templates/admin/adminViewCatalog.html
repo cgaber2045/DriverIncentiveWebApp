@@ -1,0 +1,105 @@
+{% extends "admin/adminBase.html" %}
+{% block header %}
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+<style>
+    .card {
+        border: 1px solid rgba(0,0,0,.125);
+        border-radius: .25rem;
+        padding: 10px;
+        width: 100%;
+        justify-content: center;
+        box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+        transition: 0.3s;
+        min-height: 300px;
+    }
+
+    .card:hover {
+        box-shadow: 0 12px 24px 0 rgba(0,0,0,0.2);
+    }
+
+    .card-body h5 {
+        text-transform: capitalize;
+    }
+
+    .btn-primary {
+        background-color: var(--main-theme2);
+        border-color: var(--main-theme-1);
+    }
+
+    .back-btn {
+        position: fixed;
+        z-index: 999;
+        transform: translateX(-200%);
+    }
+
+    #searchbar {
+        position: fixed;
+        z-index: 999;
+        background-color: rgba(255,255,255,1);
+    }
+
+</style>
+{% endblock %}
+{% block adminContent %}
+    {% set trunc = 40 %}
+    {% if results %}
+    <form id="searchbar" action="{{ url_for('catalog', sponsor=sponsor) }}" method="POST">
+        <input type="text" class="tftextinput" name="search" id="search" placeholder="Name, genre, type..."required>
+        <label for="sort">Sort on:</label>
+        <select name="sort" id="sort">
+            <option class="opt" selected="selected">Choose</option>
+            <option class="opt">Price</option>
+            <option class="opt">Name</option>
+        </select>
+        <button type="submit" class="tfbutton" id="searchButton">Search</button>
+    </form>
+        <hr>
+        <div id="results">
+        <input class="tfbutton back-btn" type="button" value="Go Back" onclick="history.back(-1)">
+        {% for result in results %}
+        {% if loop.index0 % 3 == 0 %}
+        <div class="row">
+        {% endif %}
+            <div class="one-third">
+                <div class="card" name="{{ result['title'] }}" data-price="{{ result['price'] }}">
+                    {% if result['img_url'] %}
+                    <img class="card-img-top" src="{{ result['img_url'] }}">
+                    {% else %}
+                    <img class="card-img-top" src="">
+                    {% endif %}
+                    <div class="card-body">
+                        <h5><strong>{{ result['title'] }}</strong></h5>
+                        <h4>${{ result['price'] }}</h4>
+                        <p class="card-text">{{ result['description'] }}</p>
+                        <button id="{{ result['listing_id'] }}" type="button" class="delete btn btn-danger" name="delete">Delete</button>
+                    </div>
+                </div>
+            </div> 
+        {% if loop.index0 % 3 == 2 or loop.index0 == (results | length) - 1 %}
+        </div>
+        {% endif %}
+        {% endfor %}
+        </div>
+    {% endif %}
+{% endblock %}
+
+{% block footer %}
+<script type="text/javascript">
+
+    // Delete item from sponsor catalog
+    $(".card-body .delete").click(function() {
+        console.log("Deleting...");    
+        var id = $(this).prop('id');
+        console.log(id);
+        var arr = {'listing_id': id};
+        $.ajax({
+            contentType: 'application/json; charset=utf-8',
+            dataType: 'json',
+            url: window.location.pathname,
+            type: 'POST',
+            data: JSON.stringify(arr),
+            success: (message) => { console.log(message); window.location.reload() }
+        });
+    });
+</script>
+{% endblock %}

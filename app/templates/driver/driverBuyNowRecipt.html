@@ -1,0 +1,14 @@
+
+{% extends "driver/driverBase.html" %}
+
+{% block driverContent %}
+	<h1>Thank you for buying: {{results['name']}}! </h1>
+	<form action="/thanks" method="POST">
+		<p> Would you like to leave a review?</p>
+	        <input type="text" placeholder="Enter 1-5" id="search" name="review" class="tftextinput" required>
+		<input type="hidden" name="product" value="{{results['id']}}">
+		<button id="signupbutton" type="submit"class="tfbutton">Submit</button>
+		
+	</form>
+{% endblock %}
+

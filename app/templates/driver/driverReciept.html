@@ -1,0 +1,54 @@
+{% extends "driver/driverBase.html" %}
+
+{% block driverContent %}
+
+    {% if success %}
+    <h1>Checkout Complete</h1>
+        <form action="/">
+            <div class ="row">		
+                    <button id="return" type="submit">Back to Home</button>
+            </div>
+        </form>
+        <p> Order Number: {{ orderNumber }} </p>
+        <p> Total: {{ total }} points</p> 
+        <p> Date: {{ date.strftime('%m-%d-%Y %I:%M %p') }}</p>
+
+        <div id='cart'>
+            <table>
+                <tr class='column-headings'>
+                <th></th>
+                <th>Item</th>
+                <th>Quantity</th>
+                <th>Unit Price</th>
+                <th>Ext. Price</th>
+                </tr>
+
+            {% set total = [0] %}
+
+            {% for item in purchase %}
+                {% set itemdata = getProductInfo(item) %}
+                <tr class='item'>
+                {% if itemdata[2] %}
+                <td class="item_img"><img src="{{ itemdata[2] }}"> </td>
+                {% else %}
+                <td class="item_img"> NOIMG </td>
+                {% endif %}
+                <td class='item_name'> {{ itemdata[0] }} </td>
+                <td class='item_quantity'>{{ purchase.get(item) }} </td>
+                <td class='item_price'> {{ (itemdata[1] / convert)|int }} </td>
+                <td class='item_total'> {{ (itemdata[1] / convert)|int * purchase.get(item) }} </td>
+                </tr>
+                {% if total.append(total.pop() + ( (itemdata[1] / convert)|int * purchase.get(item) )) %}{% endif %}
+            {% endfor %}
+
+            <tr class='total'>
+            <th class='total'colspan='4'>Total:</th>
+            <td class='total'> {{ total[0] }} Points</th>
+            </table>
+        </div>
+
+    {% else %}
+    <h1>Checkout Failed</h1>
+        <p>You do not have enough points to make this purchase!</p>
+    {% endif %}
+{% endblock %}

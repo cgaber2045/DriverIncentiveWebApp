@@ -1,0 +1,35 @@
+{% extends "sponsor/sponsorBase.html" %}
+{% block sponsorContent %}
+{% set limits = [25, 50, 100] %}
+<div class = "header-banner">{{head}} </div>
+<h1 style='padding-top: 20px;'>Product Catalog</h1>
+<p>Current expenses: {{ "$%.2f"|format(expenses) }}</p>
+<h2>View/Edit</h2>
+<a href="{{ url_for('sponsorCatalog') }}"><button id="showCatalog" type="button" class="tfbutton">View</button></a>
+<h2>Add New Items</h2>
+<button id="showSearch" type="button" class="tfbutton">Show</button>
+<div id="sponsorSearch" style="display: none;">
+    <p>Search for items to add to your catalog below</p>
+    <form action="{{ url_for('sponsorSearch') }}" method="POST">
+        <input type="text" class="tftextinput" name="search" id="search" placeholder="Name, genre, type..."required>
+        <label for="limit"># of products shown:</label>
+        <select name="limit" id="limit">
+        {% for limit in limits %}
+            <option value="{{ limit }}">{{ limit }}</option>
+        {% endfor %}
+        </select>
+        <button type="submit" class="tfbutton" id="searchButton">Search</button>
+    </form>
+</div>
+<!-- Show current products below -->
+{% endblock %}
+{% block footer %}
+<script type="text/javascript">
+    window.onload = function(){ $('#sponsorSearch').hide() };
+
+    $('#showSearch').click(function() {
+        $(this).hide();
+        $('#sponsorSearch').show();
+    });
+</script>
+{% endblock %}

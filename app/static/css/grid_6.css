@@ -1,0 +1,184 @@
+/*** layout styles ***/
+
+html {
+    box-sizing: border-box;
+}
+
+*, *:before, *:after {
+    box-sizing: inherit;
+    
+    /* technique from https://css-tricks.com/box-sizing/ */
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    position: static !important;
+}
+
+.container {
+    margin: 0 auto;
+}
+
+.center {
+    margin: 0;
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    -ms-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+}
+
+.row {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    margin-left: 0px !important;
+    margin-right: 0px !important;
+}
+
+.row > * {
+    /* The border is just to visualize columns during layout. Remove in finished site. */
+    /*border: 1px solid #BBBBBB;*/
+    padding: 15px;
+    position: relative;
+}
+
+.one-sixth {
+    width: 16.666666%;
+}
+
+.one-fifth {
+    width: 20%;
+}
+
+.one-fourth {
+    width: 25%;
+}
+
+.one-third {
+    width: 33.333333%;
+}
+
+.two-fifths {
+    width: 40%;
+}
+
+.one-half {
+    width: 50%;
+}
+
+.two-thirds {
+    width: 66.666666%;
+}
+
+.three-fifths {
+    width: 60%;
+}
+
+.three-fourths {
+    width: 75%;
+}
+
+.four-fifths {
+    width: 80%;
+}
+
+.five-sixths {
+    width: 83.333333%
+}
+
+.full {
+    width: 100%;
+}
+
+.active {
+    background-color: grey;
+}
+
+/* other helper classes */
+
+.right {
+    float: right;
+    margin-right: 10px;
+    margin-bottom: 10px;
+}
+
+.left {
+    margin-right: 10px;
+    margin-left: 10px;
+    margin-bottom: 10px;
+}
+
+.center {
+    display: block;
+    margin: 0 auto;
+}
+
+.upper-left,
+.upper-right,
+.lower-right,
+.lower-left {
+    position: absolute;
+    margin: 0;
+}
+
+.upper-left {
+    top: 15px;
+    left: 15px;
+}
+
+.upper-right {
+    top: 15px;
+    right: 15px;
+}
+
+.lower-right {
+    bottom: 15px;
+    right: 15px;
+}
+
+.lower-left {
+    bottom: 15px;
+    left: 15px;
+}
+
+/* media queries */ 
+
+@media screen and (max-width: 600px)
+{
+
+    .one-sixth,
+    .one-fifth,
+    .one-fourth,
+    .one-third,
+    .two-fifths,
+    .one-half,
+    .three-fifths,
+    .two-thirds,
+    .four-fifths,
+    .five-sixths,
+    .full {
+        padding: 10px;
+        width: 100%;
+    } 
+
+    .hide-mobile {
+        display: none;
+    }
+    
+    .static-mobile {
+        position: static;
+    }
+}
+
+@media (min-width: 601px)
+{
+    .hide-desktop {
+        display: none;
+    }
+    
+    .static-desktop {
+        position: static;
+    }
+}

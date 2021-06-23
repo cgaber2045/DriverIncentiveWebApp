@@ -1,0 +1,135 @@
+{% extends "sponsor/sponsorBase.html" %}
+{% block sponsorContent %}
+<h1>View Drivers</h1>
+<h2>Join Code: {{ session['userInfo']['properties']['id'] }} </h2>
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+<ul class="flashes" style="padding:5px;margin:0;">
+    {% for message in messages %}
+    <div class="message_flash" style="padding:0;margin:0;color: rgb(214, 41, 41);">{{ message }}</div>
+    {% endfor %}
+</ul>
+{% endif %}
+{% endwith %}
+
+<div class="driver-table">
+
+    <form id="view-drivers">
+        <table style="border-spacing:5px;">
+            <tr>
+                <td class='driverRow'>Drivers</td>
+                <td class='driverRow'>Remove</td>
+                <td class='driverRow'>User Name</td>
+                <td class='driverRow'>First Name</td>
+                <td class='driverRow'>Last Name</td>
+                <td class='driverRow'>Suspend</td>
+                <td class='driverRow'>Points</td>
+                <td class='driverRow'>Add Points</td>
+                <td class='driverRow'>Send Message</td>
+                <td class='driverRow'>Date Joined</td>
+                <td class='driverRow'>Buy Item</td>
+            </tr>
+
+                {% for driver in drivers %}
+                    {% set user = driver[3] %}
+                    {% set first = driver[0] %}
+                    {% set last = driver[2] %}
+                    {% set points = driver[4] %}
+                    {% set datejoined = driver[5] %}
+                    <tr>
+                        <td style="padding-left: 30px;"><button name="{{ user }}" id='edit'><a href="{{ url_for('updateAccount', username=user) }}">Edit</a></button></td>
+                        <td><button class="{{ sponsor }}" name=" {{ user }} " id='removeFromSponsor' style='color:red;'>X</button></td>
+                        <td> {{ user }} </td>
+                        <td> {{ first  }} </td>
+                        <td> {{ last }} </td>
+                        {% if user in suspendedUsers %}
+                        <td><button name="{{ user }}" id='unsuspend' style='color:red;'>X</button></td>
+                        {% else %}
+                        <td><button name="{{ user }}" id='suspend'>X</button></td>
+                        {% endif %}
+                        <td> {{ points }} </td>
+                        <td>
+                            <input name="{{ user }}" id='addpoints{{ user }}{{ sponsor }}' placeholder='Add Pts'>
+                            <button type="button" class="addpt" data-sponsor="{{ sponsor }}" class="{{ sponsor }}" name='{{ user }}'>+</button>
+                        </td>
+                        <td>
+                            <input name="{{ user }}" id="sendmessage{{ user }}{{ session['userInfo']['properties']['user'] }}" placeholder='Message'>
+                            <button class="{{ session['userInfo']['properties']['user'] }}" name='{{ user }}' id='sendmessage'>Send</button>
+                        </td>
+                        <td> {{ datejoined }} </td>
+                        <td>  
+                            <input name="{{ user }}" class="search" id="purchaseitem{{ user }}{{ sponsor }}" placeholder='Search Product'>
+                            <button class="{{ sponsor }}" name='{{ user }}' id='purchaseitem'>Purchase</button>
+                        </td>
+                    </tr>
+                {% endfor %}
+        </table>
+
+        {% if applications %}
+        <table style="border-spacing:5px;">
+            <tr>
+                <td class='driverRow'>Applications</td>
+                <td class='driverRow'>User Name</td>
+                <td class='driverRow'>First Name</td>
+                <td class='driverRow'>Last Name</td>
+                <td class='driverRow'>Accept Application</td>
+                <td class='driverRow'>Reject Application</td>
+                <td class='driverRow'>Send Message</td>
+            </tr>
+
+            {% for driver in applications %}
+            <tr>
+                <td style="padding-left: 30px;"><button name="{{ driver[0] }}" id='edit'><a href="{{ url_for('updateAccount', username=driver[0]) }}">Edit</a></button></td>
+                <td> {{ driver[0] }}</td>
+                <td> {{ driver[1] }}</td>
+                <td> {{ driver[2] }}</td>
+                <td><button class="{{ sponsor }}" name=" {{ driver[3] }} " id='acceptapp' style='color:green;'>&#10003</button></td>
+                <td><button class="{{ sponsor }}" name=" {{ driver[3] }} " id='rejectapp' style='color:red;'>X</button></td>
+                <td>
+                    <input name="{{ driver[0] }}" id="sendmessage{{ driver[0] }}{{ session['userInfo']['properties']['user'] }}" placeholder='Message'>
+                    <button class="{{ session['userInfo']['properties']['user'] }}" name='{{ user }}' id='sendmessage'>Send</button>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+        {% endif %}
+    </form>
+</div>
+{% endblock %}
+{% block footer %}
+    <script type="text/javascript">
+        $(".search").keyup(function(e) {
+            var search = $(this).val();
+            var id = $(this).attr('id');
+            if (search.length == 0)
+                return;
+            $.ajax({
+                contentType: "application/json; charset=utf-8",
+                dataType: 'json',
+                url: '/productAJAX',
+                type: 'POST',
+                data: JSON.stringify({'search': search}),
+                success: function(args) {
+                    $('#'+id).autocomplete({
+                        source: args
+                    })}
+                })
+            });
+
+        // Purchase Item
+        $(function() {
+        $(document).on('click', '#purchaseitem', function(e) {
+            var sponsor =  $(this).attr("class")
+            var user = $(this).attr('name');
+            var search = document.getElementById("purchaseitem" + user + sponsor).value;
+            $.ajax({ 
+            contentType: "charset=utf-8",
+            url: '/purchaseItem', 
+            type: 'POST', 
+            data: {'sponsor': sponsor, 'user': user, 'search': search},
+            success: finished
+            })
+        });
+        });
+    </script>
+{% endblock %}

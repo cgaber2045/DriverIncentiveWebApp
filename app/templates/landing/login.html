@@ -1,0 +1,40 @@
+{% extends "landing/landingTemplate.html" %}
+{% block landingContent %}
+    <div class="row">
+        <h1>Log On</h1>
+    </div>
+
+    <div class="row">
+        <p style="margin:0">Enter your credentials below.</p>
+    </div>
+
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+        <ul class="flashes" style="padding:5px;margin:0;">
+            {% for message in messages %}
+            <div class="message_flash" style="padding:0;margin:0;color: rgb(214, 41, 41);">{{ message }}</div>
+            {% endfor %}
+        </ul>
+    {% endif %}
+    {% endwith %}
+    {% block body %}
+    {% endblock %}
+
+    <form action="/login" method="POST">
+        <div class="row">
+            <input type="username" placeholder="Username" class="tftextinput" name="username" required> 
+        </div>
+        
+        <div class="row">
+            <input type="password" placeholder="Password" class="tftextinput" name="password" required>
+        </div>
+        
+        <div class="row">
+            <input type="submit" class="tfbutton" value="Log in">
+        </div>
+        
+        <label>
+            <input type="checkbox" checked="checked" name="remember"> Remember me
+        </label>
+    </form>
+{% endblock %}

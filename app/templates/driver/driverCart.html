@@ -1,0 +1,62 @@
+{% extends "driver/driverBase.html" %}
+{% block driverContent %}
+<h1>Cart</h1>
+    {% if session['shoppingCart'] | length > 0 %}
+        <p>
+            Please review your order.
+            To remove an item from your cart hit the delete button. 
+            Press 'Checkout' when you are ready to place your order.
+        </p>
+
+        <div id='cart'>
+            <form id='cart_form'>
+                <table>
+                    <tr class='column-headings'>
+                    <th>Delete</th>
+                    <th></th>
+                    <th>Item</th>
+                    <th>Quantity</th>
+                    <th>Unit Price</th>
+                    <th>Ext. Price</th>
+                    </tr>
+
+                {% set total = [0] %}
+
+                {% for item in session['shoppingCart'] %}
+                    {% set itemdata = getProductInfo(item) %}
+                    <tr class='item'>
+                    <td class='delete'><button type='submit' id="removeFromCart" name="{{item}}">X</button></td>
+                    {% if itemdata[2] %}
+                    <td class="item_img"><img src="{{ itemdata[2] }}"> </td>
+                    {% else %}
+                    <td class="item_img"> NOIMG </td>
+                    {% endif %}
+                    <td class='item_name'> {{ itemdata[0] }} </td>
+                    <td class='item_quantity'>{{ session['shoppingCart'].get(item) }} </td>
+                    <td class='item_price'> {{ (itemdata[1] / convert)|int }} </td>
+                    <td class='item_total'> {{ (itemdata[1] / convert)|int * session['shoppingCart'].get(item) }} </td>
+                    </tr>
+                    {% if total.append(total.pop() + ( (itemdata[1] / convert)|int * session['shoppingCart'].get(item) )) %}{% endif %}
+                {% endfor %}
+
+                <tr class='total'>
+                <th class='total'colspan='5'>Total:</th>
+                <td class='total'> {{ total[0] }} Points</th>
+                </table>
+            </form>
+
+
+            <form action="/checkout">
+                {% if not session['userInfo']['properties']['role'] == ("admin" or "sponsor") %}
+                <button class="tfbutton" type='submit' style="width:90px;">Checkout</button>
+                {% else %}
+                <button class="tfbutton" type='submit' style="width:90px;" disabled>Checkout</button>
+                <p>Can't purchase items on this account.</p>
+                {% endif %}
+            </form>
+
+            {% else %}
+                <p class='no_items'>Your cart is empty.</p>
+            {% endif %}
+        </div>
+{% endblock %}

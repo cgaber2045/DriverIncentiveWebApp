@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block content %}
+<!--Header Start-->
+<header>
+    <div id="top-navbar">
+
+        <a href="#home" style="font-size: 50px;">
+            <!--<img src="{{url_for('static', filename='img/logo.png')}}" class="logo">-->
+            <span>Reward App Logo</span>
+        </a>
+
+        <div id="top-navbar-right">
+            <a>
+                <img src="{{url_for('static', filename='img/userpic.png')}}" style="width:50px;padding-top:10px;">
+            </a>
+
+            <a style="padding-left:0;">
+                <span>Sign Up</span>
+            </a>
+        </div>
+        
+    </div>
+</header>
+
+<article>
+    <div class="container">
+            <!--Side Nav Bar Start-->
+
+            <div class="one-fifth">
+                {% macro nav_link(endpoint, name) %}
+                {% if request.endpoint.endswith(endpoint) %}
+                    <li class="active"><a href="{{ url_for(endpoint) }}">{{name}}</a></li>
+                {% else %}
+                    <li><a href="{{ url_for(endpoint) }}">{{name}}</a></li>
+                {% endif %}
+                {% endmacro %}
+                <ul class="side-navbar">
+                    {{ nav_link('home', 'Log In') }}
+                    {{ nav_link('signup', 'Sign Up') }}
+                    {{ nav_link('about', 'About') }}
+                    <li style="display:none">
+                        <a href="">
+                            <img src="{{url_for('static', filename='img/settings.png')}}" style="width:30px;vertical-align:middle;padding-right: 5px;">
+                            <span style="line-height:30px;">Settings</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <!--Content Start-->
+            <div class="row">
+
+                    <div class="one-sixth"></div>
+                    <div class="five-sixths">
+                        {% block landingContent %}
+
+                        {% endblock %}
+                    </div>
+                </div>
+                
+            </div>		
+    </div>
+</article>
+{% endblock %}

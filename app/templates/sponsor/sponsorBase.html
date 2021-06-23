@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+{% block content %}
+	<!--Header Start-->
+	<header>
+        <div id="top-navbar">
+
+            <a href="{{ url_for('home') }}" style="font-size: 50px;">
+                <!--<img src="{{url_for('static', filename='img/logo.png')}}" class="logo">-->
+                <span>Reward App Logo</span>
+            </a>
+
+            <div id="top-navbar-right">
+
+                {% if session['userInfo']['properties']['role'] == "admin" %}
+                <div class="dropdown">
+                    <img class="dropbtn" src="{{url_for('static', filename='img/viewChange.png')}}" style="width:50px;padding-top:10px;" title="Change View">
+                    <div class="dropdown-content">
+                        <a href="/returnView">Return View</a>
+                    </div>
+                </div>
+                {% endif %}
+
+                {% if session['userInfo']['properties']['role'] == "sponsor" %}
+                <div class="dropdown">
+                    <img class="dropbtn" src="{{url_for('static', filename='img/viewChange.png')}}" style="width:50px;padding-top:10px;" title="Change View">
+                    <div class="dropdown-content">
+                        <a href="/driverView">Driver View</a>
+                    </div>
+                </div>
+                {% endif %}
+                
+                <a href="/sponsorProfile">
+                    <img src="{{url_for('static', filename='img/userpic.png')}}" class="pfp">
+                </a>
+
+                <a style="padding-left:0;">
+                    <span>{{ session['userInfo']['properties']['user'].capitalize() }}</span>
+                </a>
+
+                <a href="/logout">
+                    <img src="{{url_for('static', filename='img/logout.png')}}" style="width:50px;padding-top:10px;">
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <article>
+        <div class="container">
+                <!--Side Nav Bar Start-->
+                {% macro nav_link(endpoint, name) %}
+                {% if request.endpoint.endswith(endpoint) %}
+                    <li class="active"><a href="{{ url_for(endpoint) }}">{{name}}</a></li>
+                {% else %}
+                    <li><a href="{{ url_for(endpoint) }}">{{name}}</a></li>
+                {% endif %}
+                {% endmacro %}
+
+                <div class="one-fifth">
+                    <ul class="side-navbar">
+                        {{ nav_link('home', 'Home') }}
+                        {{ nav_link('sponsorPointsLeader', 'Points Leaderboard') }}
+                        {{ nav_link('sponsorViewDriver', 'My Drivers') }}
+                        {{ nav_link('sponsorSystemSettings', 'System Settings') }}
+                        {{ nav_link('sponsorProfile', 'Profile') }}
+                        {{ nav_link('inbox', 'Inbox') }}
+                        
+                        <li>
+                            <a href="/settings">
+                                <img src="{{url_for('static', filename='img/settings.png')}}" style="width:30px;vertical-align:middle;padding-right: 5px;">
+                                <span style="line-height:30px;">Settings</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <!--Content Start-->
+                <div class="row">
+                    <div class="one-sixth"></div>
+                    <div class="five-sixths">
+                        {% block sponsorContent %}
+
+                        {% endblock %}
+                    </div>
+                </div>
+        </div>
+    </article>
+{% endblock %}

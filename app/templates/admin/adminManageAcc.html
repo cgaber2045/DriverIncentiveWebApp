@@ -1,0 +1,249 @@
+{% extends "admin/adminBase.html" %}
+{% block adminContent %}
+<h1>Manage Accounts</h1>
+
+<h2>Create New Accounts</h2>
+
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+    <ul class="flashes" style="padding:5px;margin:0;">
+        {% for message in messages %}
+        <div class="message_flash" style="padding:0;margin:0;color: rgb(214, 41, 41);">{{ message }}</div>
+        {% endfor %}
+    </ul>
+{% endif %}
+{% endwith %}
+
+
+<form action="{{ url_for('adminManageAcc') }}" method="POST">
+    <label for="roleSelect">Select User Role</label>
+        <select name="roleSelect" id = "roleSelect" required>
+            <option hidden disabled selected value> Select </option>
+            <option value = "driver">Driver</option>
+            <option value = "sponsor">Sponsor</option>
+            <option value = "admin">Admin</option>
+        </select>
+        <input type="text" placeholder="Username" id="textbox" class="tftextinput" name="user" size="10" maxlength="100" required>
+        <input type="password" placeholder="Password" id="password" class="tftextinput" name="pass" size="10" maxlength="20" required>
+        <input placeholder="Title" id="title" class="tftextinput" name="title" size="10" maxlength="20" hidden>
+        <input placeholder="SponsorID" id="sponsorid" class="tftextinput" name="sponsorid" size="10" maxlength="20" hidden>
+    <div class="row">
+        <button type="submit" class="tfbutton" style="width: 200px;" name="create-acc">Create Account</button>
+    </div>
+</form>
+
+<h2> View all users </h2>
+
+<div class="driver-table">
+    <form id="view-drivers">
+        <input type="text" class="tftextinput" id="searchaccs" onkeyup="searchAccs()" placeholder="Search for users..">
+        <table id="accounts">
+            <tr>
+                <th class='heading'>Admins</th>
+                <th>Delete</th>
+                <th>User Name</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th></th>
+                <th></th>
+                <th>Send Message</th>
+            </tr>
+
+            {% for admin in adminList %}
+            <tr>
+                <td style="padding-left: 30px;"><button name="{{ admin[3] }}" id='edit'><a href="{{ url_for('updateAccount', username=admin[3]) }}">Edit</a></button></td>
+                <td><button name=" {{ admin[3] }} " id='remove' style='color:red;'>X</button></td>
+                <td> {{ admin[3] }} </td>
+                <td> {{ admin[0] }} </td>
+                <td> {{ admin[2] }} </td>
+                <td></td>
+                <td></td>
+                <td>
+                    <input name="{{ admin[3] }}" id="sendmessage{{ admin[3] }}{{ session['userInfo']['properties']['user'] }}" placeholder='Message'>
+                    <button class="{{ session['userInfo']['properties']['user'] }}" name='{{ admin[3] }}' id='sendmessage'>Send</button>
+                </td>
+            </tr>
+            {% endfor %}
+            <tr><td><br></td></tr>
+            {% for sponsor in sponsorList %}
+                {% set user = sponsor[7] %}
+                {% set title = sponsor[0] %}
+                {% set id = sponsor[1] %}
+                {% set datejoined = sponsor[6] %}
+                <tr>
+                    <th class='heading'> Sponsor </th>
+                    <th>Delete</th>
+                    <th>User</th>
+                    <th>Title</th>
+                    <th>Sponsor ID</th>
+                    <th>Suspend</th>
+                    <th>Date Joined</th>
+                    <th>Send Message</th>
+                </tr>
+
+                <tr>
+                    <td style="padding-left: 30px;"><button name="{{ user }}" id='edit'><a href="{{ url_for('updateAccount', username=user) }}">Edit</a></button></td>
+                    <td><button name=" {{ title }} " id='remove' style='color:red;'>X</button></td>
+                    <td> {{ user }} </td>
+                    <td> {{ title }} </td>
+                    <td> {{ id }} </td>
+                    {% if title in suspendedUsers %}
+                    <td><button name=" {{ title }} " id='unsuspend' style='color:red;'>X</button></td>
+                    {% else %}
+                    <td><button name=" {{ title }} " id='suspend'>X</button></td>
+                    {% endif %}
+                    <td> {{ datejoined }} </td>
+                    <td>
+                        <input name="{{ title }}" id="sendmessage{{ title }}{{ session['userInfo']['properties']['user'] }}" placeholder='Message'>
+                        <button class="{{ session['userInfo']['properties']['user'] }}" name='{{ title }}' id='sendmessage'>Send</button>
+                    </td>
+                </tr>
+
+                {% if getDriverList(sponsor[0]) %}
+                <tr>
+                    <td class='driverRow'>Drivers</td>
+                    <td class='driverRow'>Remove</td>
+                    <td class='driverRow'>User Name</td>
+                    <td class='driverRow'>First Name</td>
+                    <td class='driverRow'>Last Name</td>
+                    <td class='driverRow'>Suspend</td>
+                    <td class='driverRow'>Points</td>
+                    <td class='driverRow'>Add Points</td>
+                    <td class='driverRow'>Send Message</td>
+                    <td class='driverRow'>Date Joined</td>
+                </tr>
+
+                    {% for driver in getDriverList(sponsor[0]) %}
+                        {% set user = driver[3] %}
+                        {% set first = driver[0] %}
+                        {% set last = driver[2] %}
+                        {% set points = driver[4] %}
+                        {% set datejoined = driver[5] %}
+                        <tr>
+                            <td style="padding-left: 30px;"><button name="{{ user }}" id='edit'><a href="{{ url_for('updateAccount', username=user) }}">Edit</a></button></td>
+                            <td><button class="{{ sponsor[7] }}" name=" {{ user }} " id='removeFromSponsor' style='color:red;'>X</button></td>
+                            <td> {{ user }} </td>
+                            <td> {{ first  }} </td>
+                            <td> {{ last }} </td>
+                            {% if user in suspendedUsers %}
+                            <td><button name="{{ user }}" id='unsuspend' style='color:red;'>X</button></td>
+                            {% else %}
+                            <td><button name="{{ user }}" id='suspend'>X</button></td>
+                            {% endif %}
+                            <td> {{ points }} </td>
+                            <td>
+                                <input name="{{ user }}" id='addpoints{{ user }}{{ sponsor[7] }}' placeholder='Add Pts'>
+                                <button type="button" class="addpt" data-sponsor="{{ sponsor[7] }}" class="{{ sponsor[7] }}" name='{{ user }}'>+</button>
+                            </td>
+                            <td>
+                                <input name="{{ user }}" id="sendmessage{{ user }}{{ session['userInfo']['properties']['user'] }}" placeholder='Message'>
+                                <button class="{{ session['userInfo']['properties']['user'] }}" name='{{ user }}' id='sendmessage'>Send</button>
+                            </td>
+                            <td> {{ datejoined }} </td>
+                        </tr>
+                    {% endfor %}   
+                    <tr><td><br></td></tr>
+                {% endif %}
+
+            {% endfor %}
+            <tr><td><br></td></tr>
+
+            <tr>
+                <td class='driverRow' style="color:var(--main-theme3);padding-left:0;">Sponsorless Drivers</td>
+                <td class='driverRow'>Delete</td>
+                <td class='driverRow'>User Name</td>
+                <td class='driverRow'>First Name</td>
+                <td class='driverRow'>Last Name</td>
+                <td class='driverRow'>Suspend</td>
+                <td class='driverRow'>Date Joined</td>
+                <td class='driverRow'>Send Message</td>
+            </tr>
+
+        {% for driver in sponsorlessDrivers %}
+            {% set user = driver[0] %}
+            {% set first = driver[1] %}
+            {% set last = driver[2] %}
+            {% set datejoined = driver[4] %}
+            <tr>
+                <td><button name="{{ user }}" id='edit'><a href="{{ url_for('updateAccount', username=user) }}">Edit</a></button></td>
+                <td><button name=" {{ user }} " id='remove' style='color:red;'>X</button></td>
+                <td> {{ user }} </td>
+                <td> {{ first  }} </td>
+                <td> {{ last }} </td>
+                {% if user in suspendedUsers %}
+                <td><button name="{{ user }}" id='unsuspend' style='color:red;'>X</button></td>
+                {% else %}
+                <td><button name="{{ user }}" id='suspend'>X</button></td>
+                {% endif %}
+                <td> {{ datejoined }} </td>
+                <td> 
+                    <input name="{{ user }}" id="sendmessage{{ user }}{{ session['userInfo']['properties']['user'] }}" placeholder='Message'>
+                    <button class="{{ session['userInfo']['properties']['user'] }}" name='{{ user }}' id='sendmessage'>Send</button>
+                </td>
+            </tr>
+        {% endfor %}
+            <tr><td><br></td></tr>
+        {% if disabled[0] %}
+            <tr>
+                <td class='driverRow' style="color:var(--main-theme3);padding-left:0;">Disabled Drivers</td>
+                <td class='driverRow'>User Name</td>
+                <td class='driverRow'>First Name</td>
+                <td class='driverRow'>Last Name</td>
+                <td class='driverRow'>Date Joined</td>
+                <td class='driverRow'>Reactivate</td>
+            </tr>
+            {% for driver in disabled[0] %}
+            <tr>
+                <td></td>
+                <td> {{ driver[0] }} </td>
+                <td> {{ driver[1] }} </td>
+                <td> {{ driver[2] }} </td>
+                <td> {{ driver[4] }} </td>
+                <td><button name="{{ driver[0] }}" id='reactivate' style='color:green;'>&#10003</button></td>
+            </tr>
+            {% endfor %}
+        {% endif %}
+
+        {% if disabled[1] %}
+            <tr>
+                <td class='driverRow' style="color:var(--main-theme3);padding-left:0;">Disabled Sponsors</td>
+                <td class='driverRow'>User Name</td>
+                <td class='driverRow'>Title</td>
+                <td class='driverRow'>Date Joined</td>
+                <td class='driverRow'>Reactivate</td>
+            </tr>
+            {% for sponsor in disabled[1] %}
+            <tr>
+                <td></td>
+                <td> {{ sponsor[0] }} </td>
+                <td> {{ sponsor[1] }} </td>
+                <td> {{ sponsor[3] }} </td>
+                <td><button name="{{ sponsor[0] }}" id='reactivate' style='color:green;'>&#10003</button></td>
+            </tr>
+            {% endfor %}
+        {% endif %}
+
+        {% if disabled[2] %}
+            <tr>
+                <td class='driverRow' style="color:var(--main-theme3);padding-left:0;">Disabled Admins</td>
+                <td class='driverRow'>User Name</td>
+                <td class='driverRow'>First Name</td>
+                <td class='driverRow'>Last Name</td>
+                <td class='driverRow'>Date Joined</td>
+                <td class='driverRow'>Reactivate</td>
+            </tr>
+            {% for driver in disabled[2] %}
+            <tr>
+                <td></td>
+                <td> {{ driver[0] }} </td>
+                <td> {{ driver[1] }} </td>
+                <td> {{ driver[2] }} </td>
+                <td> {{ driver[4] }} </td>
+                <td><button name="{{ driver[0] }}" id='reactivate' style='color:green;'>&#10003</button></td>
+            </tr>
+            {% endfor %}
+        {% endif %}
+        </table>
+    </form>
+</div>
+{% endblock %}

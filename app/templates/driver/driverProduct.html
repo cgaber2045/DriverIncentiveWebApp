@@ -1,0 +1,26 @@
+
+{% extends "driver/driverBase.html" %}
+
+{% block driverContent %}
+
+	<h1> {{results['name']}} </h1>
+
+	<div>
+	{%if results['img_url'] != None%}
+	<img src="{{results['img_url']}}">
+	{%endif%}
+	</div>
+	<p> {{results['description']}}</p>
+	{%if convert%}
+	<p> {{results['price']/ convert }} Points</p>
+	{%endif%}
+	<p> ${{results['price']}}</p>
+	<form action="/buynowrecipt" method="POST">
+		<div>
+			<button id='{{results['name']}}' type="submit" class="tfbutton" name='buy' value="{{results['name']}}">Buy Now!</button>
+		</div>
+	</form>
+
+
+{% endblock %}
+

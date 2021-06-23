@@ -1,0 +1,95 @@
+{% extends "driver/driverBase.html" %}
+{% block header %}
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+<style>
+    .card {
+        border: 1px solid rgba(0,0,0,.125);
+        border-radius: .25rem;
+        padding: 10px;
+        width: 100%;
+        justify-content: center;
+        box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+        transition: 0.3s;
+    }
+
+    .card:hover {
+        box-shadow: 0 12px 24px 0 rgba(0,0,0,0.2);
+    }
+
+    .card-body h5 {
+        text-transform: capitalize;
+    }
+
+    .btn-primary {
+        background-color: var(--main-theme2);
+        border-color: var(--main-theme-1);
+    }
+
+    .back-btn {
+        position: fixed;
+        z-index: 999;
+        transform: translateX(-200%);
+    }
+
+    #searchbar {
+        position: fixed;
+        z-index: 999;
+        background-color: rgba(255,255,255,1);
+    }
+</style>
+{% endblock %}
+
+{% block driverContent %}
+
+{% set trunc = 40 %}
+{% set limits = [1, 5, 10, 50] %}
+
+
+<h1>Search Results</h1>
+	<form action="/">
+		<div class ="row">		
+	            <button id="return" type="submit">Back to Home</button>
+		</div>
+    </form>
+    
+	<div class="row">
+		<p> Query: {{query}} </p>
+	</div>
+
+	<div class="row">
+		<p> Found {{numresults}}  Results: </p>
+    </div>
+
+		{% for segment in results %}
+            {% if loop.index0 % 3 == 0 %}
+            <div class="row">
+            {% endif %}
+            <div class="one-third">
+                <div class="card">
+		    {%if segment['img_url'] != None%}
+                    <img class="card-img-top" src="{{ segment['img_url'] }}">
+		    {%endif%}
+                    <div class="card-body">
+                        <h5><strong>{{ segment['name'] }}</strong></h5>
+                        <h4>{{ segment['price'] }} Points</h4>
+                        {% if segment['description'] | length > trunc %}
+                        <p class="card-text">{{ segment['description'][0:trunc] + '...' }}</p>
+                        {% else %}
+                        <p class="card-text">{{ segment['description'] }}</p>
+                        {% endif %}
+                        <form action="/productpage" method="POST">
+                            <button id="{{segment['name']}}" type="submit" class="add btn btn-primary" name="productname" value = "{{segment['name']}}">View</button>
+                        </form>
+                        <button id="addToCart" name="{{segment['id']}}">Add To Cart</button>
+                    </div>
+                </div>
+            </div>
+
+            {% if loop.index0 % 3 == 2 or loop.index0 == (results | length) - 1 %}
+            </div>
+            {% endif %}
+        {% endfor %}
+
+{% endblock %}
+
+

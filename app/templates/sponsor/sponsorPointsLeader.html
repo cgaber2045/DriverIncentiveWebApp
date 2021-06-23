@@ -1,0 +1,47 @@
+{% extends "sponsor/sponsorBase.html" %}
+{% block sponsorContent %}
+<h1>Points Leaderboard</h1>
+<div class="row">
+    <div class="one-half">
+        <table id="view-drivers" style="padding:10px;">
+            <tr>
+                <th>Position</th>
+                <th></th>
+                <th>Name</th>
+                <th>Points</th>
+            </tr>
+        {% for driver in drivers %}
+            <tr>
+                <td>
+                    {{ loop.index }}
+                </td>
+                <td>
+                {% if driver[6] %}
+                    <a href="/driverProfile">
+                        <img src="{{url_for('static', filename='img/userpic2.png')}}" class="pfp">
+                    </a>
+                {% else %}
+                    <a href="/driverProfile">
+                        <img src="{{url_for('static', filename='img/userpic2.png')}}" class="pfp">
+                    </a>
+                {% endif %}
+                </td>
+                <td>
+                {{ driver[0] }} {{ driver[2] }} 
+                </td>
+                <td>
+                {{ driver[4] }}
+                </td>
+            </tr>
+        {% endfor %}
+        </table>
+    </div>
+    <div class="one-half">
+        <h2 style="padding-left: 10px;">Point Bonus</h2>
+        <p><b>Top drivers at the end of each month get a point bonus.</b></p>
+        <p>First Place: +250</p>
+        <p>Second Place: +150</p>
+        <p>Third Place: +100</p>
+    </div>
+</div>
+{% endblock %}

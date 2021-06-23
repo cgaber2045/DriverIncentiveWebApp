@@ -1,0 +1,26 @@
+---
+
+- name: Copy over new code
+
+  hosts: project-server
+  tasks:
+          - name: Copy project from git
+            git:
+                repo: "git@ssh.dev.azure.com:v3/F20-Team15-Hastings-Gaber-Gleaton-Sherrer/F20-Team15-Hastings.Gaber.Gleaton.Sherrer/F20-Team15-Hastings.Gaber.Gleaton.Sherrer"
+                dest: "/home/ubuntu/project"
+                version: "master"
+
+- name: Update packages
+  hosts: project-server
+  tasks:
+        - name: pip task
+          pip:
+                  requirements: /home/ubuntu/project/requirements.txt
+- name: Deploy new code
+  hosts: project-server
+  become: true
+  tasks:
+        - name: Stop project service
+          systemd: state=stopped name=project
+        - name: Start project service
+          systemd: state=started name=project

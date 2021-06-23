@@ -1,0 +1,80 @@
+{% extends "admin/adminBase.html" %}
+{% block adminContent %}
+<h1>Edit {{ user.getRole() }}</h1>
+{% set username = user.properties['user'] %}
+{% set email = user.properties['email'] %}
+{% set phone = user.properties['phone'] %}
+<div class="driver-table">
+    {% if role == 'sponsor' %}
+    {% set name = user.properties['title'] %}
+    <div class="row">
+        <p>Name: <span id="title">{{ name }}</span></p>
+    </div>
+    <hr>
+    <div class="row">
+        <p>Catalog: <button id="view-catalog" type="button" class="tfbutton">View</button></p>
+    </div>
+    {% endif %}
+    <div class="row">
+        <p>Username: <strong><span id="username">{{ username }}</span></strong></p>
+    </div>
+    <hr>
+    <div class="row">
+        <p>E-mail: <input type="email" id="email" value="{{ email }}"></p>
+        <button class="tfbutton" id="update-email">Update</button>
+    </div>
+    <hr>
+    {% if role != 'sponsor' %}
+    {% set fname = user.properties['fname'] %}
+    {% set mname = user.properties['mname'] %}
+    {% set lname = user.properties['lname'] %}
+
+    <div class="row">
+        <div class="left">
+            <p>First Name: <input type="text" id="first_name" value="{{ fname }}"></p>
+            <p>Middle Name: <input type="text" id="mid_name" value="{{ mname }}"></p>
+            <p>Last Name: <input type="text" id="last_name" value="{{ lname }}"></p>
+        </div>
+        <div class="right">
+            <button class="tfbutton" id="update-names">Update</button>
+        </div>
+    </div>
+    <hr>
+    {% endif %}
+    {% if role != 'admin' %}
+    {% set address = user.properties['address'] %}
+    <div class="row">
+        <p>Address: <input type="text" id="address" value="{{ address }}"></p>
+        <button class="tfbutton" id="update-address">Update</button>
+    </div>
+    <hr>
+    {% endif %}
+    <div class="row">
+        <p>Phone: <input type="phone" id="phone" value="{{ phone }}"></p>
+        <button class="tfbutton" id="update-phone">Update</button>
+    </div>
+    <hr>
+    <div class="row">
+        <p>
+            <label for="pwd">Password</label>
+            <input id="pwd" name="pwd" type="password" placeholder="Password">
+            <label for="confirm">Confirm Password</label>
+            <input id="confirm" name="confirm" type="password" placeholder="Confirm Password">
+        </p>
+        <button class="tfbutton" id="update-password">Update</button>
+    </div>
+    <hr>
+    <div class="row">
+        <p>Add to sponsor: <input id="sponsor" placeholder="Sponsor ID"></p>
+        <button class="tfbutton" id="add-sponsor">Add</button>
+    </div>
+</div>
+{% endblock %}
+{% block footer %}
+{% set username = user.properties['user'] %}
+<script type="text/javascript">
+    $("#view-catalog").click(function() {
+        window.location.assign("{{ url_for('catalog', sponsor=username) }}");
+    });
+</script>
+{% endblock %}
